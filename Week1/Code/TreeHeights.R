@@ -4,7 +4,12 @@
 # height = distance * tan(radians)
 #
 # Tree species, distance, and angle are read from a hard-wired data file.
-# Needs to source prerequisite TreeHeight function.
+# Needs prerequisite TreeHeight function, so you'll need
+# to run this as:
+# R
+# > source('TreeHeight.R')
+# > source('TreeHeights.R')
+# > TreeHeights()
 #
 # OUTPUT:
 # A data frame with the following columns:

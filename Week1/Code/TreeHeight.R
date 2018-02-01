@@ -10,7 +10,7 @@
 # OUTPUT:
 # The heights of the tree, same units as "distance"
 
-TreeHeight <- function(degrees, distance){
+TreeHeight <- function(degrees, distance) {
   radians <- degrees * pi / 180
   height <- distance * tan(radians)
   # print(paste("Tree height is:", height))
