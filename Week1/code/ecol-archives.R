@@ -1,3 +1,6 @@
+### Plotting ###
+
+# Set working directory
 getwd()
 setwd("/home/kimanh/CMEECourseWork/Week1/code")
 
