@@ -5,7 +5,7 @@
 #
 # Tree species, distance, and angle are read from a data file
 #  specified on the command line. The easiest option is to
-#  run this from the command-line from the code directory as
+#  run this from the command-line from the Code directory as
 #
 # Rscript get_TreeHeight.R ../Data/trees.csv
 #
@@ -47,7 +47,7 @@ getOutFile <- function(inFile) {
   inFile <- inFile.split[[1]][length(inFile.split[[1]])]
   # append suffixy bit to make output file name
   outFile <- paste(inFile, '_treeheights.csv', sep='')
-  outFile <- paste('../results/', outFile, sep='')
+  outFile <- paste('../Results/', outFile, sep='')
   # print(paste('output file:', outFile))
   return(outFile)
 }

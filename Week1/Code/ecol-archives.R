@@ -2,9 +2,9 @@
 
 # Set working directory
 getwd()
-setwd("/home/kimanh/CMEECourseWork/Week1/code")
+setwd("/home/kimanh/CMEECourseWork/Week1/Code")
 
-MyDF <- read.csv("../data/EcolArchives-E089-51-D1.csv")
+MyDF <- read.csv("../Data/EcolArchives-E089-51-D1.csv")
 dim(MyDF) # check size of data frame loaded
 MyDF$Record.number #check what the data contain. Hit tab after $
 
@@ -58,11 +58,11 @@ library(lattice) # load library
 densityplot(~log(Predator.mass) | Type.of.feeding.interaction, data=MyDF)
 
 # saving graphs as a PDF
-pdf("../results/Pred_Prey_Overlay.pdf", 11.7, 8.3) #open blank pdf page, the numbers are page dimensions in inches
+pdf("../Results/Pred_Prey_Overlay.pdf", 11.7, 8.3) #open blank pdf page, the numbers are page dimensions in inches
 hist(log(MyDF$Predator.mass), xlab="Body Mass (kg)", ylab="Count", col=rgb(1,0,0,0.5), main="Predator-Prey Size Overlap") #plot predator histogram (note 'rgb')
 hist(log(MyDF$Prey.mass), col=rgb(0,0,1,0.5), add=T) # plot prey weights. # add to same plot = TRUE
 legend('topleft', c('Predators', 'Prey'), fill=c(rgb(1,0,0,0.5), rgb(0,0,1,0.5)))
 dev.off()
 
-### workflow should be: store and retrieve data from data directory, keep code and work in a code directory, and save outputs to a results directory
+### workflow should be: store and retrieve data from data directory, keep code and work in a Code directory, and save outputs to a results directory
 

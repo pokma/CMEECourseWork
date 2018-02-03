@@ -8,7 +8,7 @@
 # Compare a sample mean to a hypothesized or target value
 
 # Load data
-genome <- read.csv("../data/GenomeSize.csv")
+genome <- read.csv("../Data/GenomeSize.csv")
 str(genome) #Check data has loaded correctly
 
 # Calculate the three values (mean, variance, number of data points) from the data

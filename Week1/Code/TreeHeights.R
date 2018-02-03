@@ -23,11 +23,11 @@ source('TreeHeight.R')
 
 
 TreeHeights <- function() {
-  treeFrame <- read.csv("../data/trees.csv", header=TRUE)
+  treeFrame <- read.csv("../Data/trees.csv", header=TRUE)
   Height.m <- TreeHeight(treeFrame$Distance.m, treeFrame$Angle.degrees)
   treeFrame$Tree.Height.m <- Height.m
   # don't want row numbers in the output
-  write.csv(treeFrame, '../results/TreeHts.csv', row.names=FALSE)
+  write.csv(treeFrame, '../Results/TreeHts.csv', row.names=FALSE)
   return(treeFrame)
 }
 

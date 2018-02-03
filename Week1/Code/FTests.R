@@ -1,6 +1,6 @@
 ### F tests + t tests revisited + non-parametric tests ###
 
-genome <- read.csv("../data/GenomeSize.csv")
+genome <- read.csv("../Data/GenomeSize.csv")
 
 # F test
 var.test(BodyWeight ~ Suborder, data = genome)

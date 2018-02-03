@@ -5,7 +5,7 @@
 
 ######################## (1) ##########################
 # LOAD THE DATA FROM THE CSV TEXT FILE INTO A DATA FRAME:
-genome <- read.csv('../data/GenomeSize.csv') #assumes that you are working from your Code directory
+genome <- read.csv('../Data/GenomeSize.csv') #assumes that you are working from your Code directory
 
 ######################## (2) ##########################
 # LOOK AT AND MANIPULATE THE DATA:
@@ -85,7 +85,7 @@ legend(40,2, legend=levels(genome$Suborder), #Add legend at coordinate 40,2
 ######################## (9) ##########################
 # SAVE FILE AS A PDF:
 
-pdf('../results/GenomeSize.pdf', height=5, width=6) #Open the pdf file
+pdf('../Results/GenomeSize.pdf', height=5, width=6) #Open the pdf file
 
 plot(GenomeSize ~ TotalLength , data = genome, 
 	col=myColours[Suborder], pch=mySymbols[Suborder],
@@ -97,4 +97,4 @@ dev.off() #Close the pdf file
 
 ######################## (10) ##########################
 # SAVE THE DATA AND YOUR NEW VARIABLES IN RDATA FORMAT:
-save(genome, myColours, mySymbols, file='../results/GenomeSize.Rda')
+save(genome, myColours, mySymbols, file='../Results/GenomeSize.Rda')
