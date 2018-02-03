@@ -24,12 +24,13 @@
 
 
 # Demonstration.
+# This version uses loops, which is kind of anti-R.
 # @param sample_sizes A vector where each element represents the number of values to generate.
 # @param num_cols The number of grid columns to display.
 demoo <- function(sample_sizes, num_cols) {
   num_graphs <- length(sample_sizes)
   num_rows <- num_graphs / num_cols
-  dev.off()  # erases existing plots
+  graphics.off()  # erases existing plots, if any
   par(mfcol=c(num_rows, num_cols))  # sets up the display grid
   for (r in 1:num_rows) {
     for (c in 1:num_cols) {
@@ -41,4 +42,29 @@ demoo <- function(sample_sizes, num_cols) {
 }
 
 # Runs the demonstration.
-demoo(c(5, 10, 20, 40, 80, 160, 360, 720), 4)
+# demoo(c(5, 10, 20, 40, 80, 160, 360, 720), 4)
+
+
+# Another demonstration.
+# This version uses vector processing rather than loops, which is much more R-style. Not to
+#  mention a whole lot faster apparently.
+# @param sample_sizes A vector where each element represents the number of values to generate.
+# @param num_cols The number of grid columns to display.
+
+demtwo <- function(sample_sizes, num_cols) {
+  num_graphs <- length(sample_sizes)
+  num_rows <- num_graphs / num_cols
+  graphics.off()  # erases existing plots, if any
+  par(mfcol=c(num_rows, num_cols))  # sets up the display grid
+  # generates an appropriate number of random numbers for each sample size
+  samples <- sapply(sample_sizes, function(size) {
+    rnorm(size, m=0, sd=1)
+  })
+  # displays each set of samples on the grid
+  sapply(samples, function(sample) {
+    hist(sample, col=rgb(1, 1, 0), main=paste('n =', length(sample)))
+  })
+}
+
+# Runs the demonstration.
+demtwo(c(5, 10, 20, 40, 80, 160, 360, 720), 4)
