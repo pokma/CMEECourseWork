@@ -4,25 +4,6 @@
 #  normally-distributed values with mean = 0 and standard deviation = 1.
 
 
-# Generates a number of uniformly-distributed random values.
-# @param size The size of the sample.
-# @return The vector of generated numbers.
-# sampling <- function(size) {
-#   return(rnorm(size, m=0, sd=1))
-# }
-
-
-# Displays the histogram of generated values at a given position on a grid of graphs.
-# @param sample The vector of sample values.
-# @param rw The grid position row-number.
-# @param label A label for the graph.
-# @param cl The grid position column-numver.
-# visualize <- function(sample, rw=1, cl=1, label="Sample this!") {
-#   par(mfg=c(rw, cl))
-#   hist(sample, col=rgb(1, 1, 0), main=label)
-# }
-
-
 # Demonstration.
 # This version uses loops, which is kind of anti-R.
 # @param sample_sizes A vector where each element represents the number of values to generate.
@@ -67,4 +48,26 @@ demtwo <- function(sample_sizes, num_cols) {
 }
 
 # Runs the demonstration.
-demtwo(c(5, 10, 20, 40, 80, 160, 360, 720), 4)
+# demtwo(c(5, 10, 20, 40, 80, 160, 360, 720), 4)
+
+
+# Yet another demonstration. Here we generate samples of a number of 5 uniformly-distributed values, eg,
+#  the first sample consists of 5 sets of 5 numbers, the second consists of 10 sets of 5 numbers, etc.
+# Then we calculate the mean of each set of 5 numbers, eg, the first set consists of 10 means, the second set
+#  consists of 10 means, etc.
+# Finally, calculate the mean of each set of means. The means should increasingly approach 0.
+demMore <- function(sample_sizes) {
+  # for each sample_size, generates that many sets of 5 uniformly-distributed random values
+  samples <- sapply(sample_sizes, function(size) {
+    return(sapply(1:size, function(num) {
+      rnorm(5, m=0, sd=1)
+    }))
+  })
+  # for each set of 5 random values, determines the mean
+  means <- sapply(samples, mean)
+  # determines the mean of the means
+  print(sapply(means, mean))
+  # now do the same for the standard deviations...
+}
+
+demMore(c(5, 10, 20, 40, 80, 160, 360, 1000, 10000, 100000))
