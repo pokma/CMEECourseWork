@@ -59,4 +59,13 @@ sum(resid(genomeSizeModelDamsel) ^ 2)
 
 
 ### PLOTTING THE MODEL ###
-plot(log(genome$logBW),log(genome$logGS),pch=20, ylab="log Body Weight", xlab="log Genome Size")
+# This took a bit of cobbling to hack together #
+logGS.Anis <- log(Anisoptera$GenomeSize)
+logBW.Anis <- log(Anisoptera$BodyWeight)
+logGS.Zyg <- log(Zygoptera$GenomeSize)
+logBW.Zyg <- log(Zygoptera$BodyWeight)
+plot(logBW.Zyg ~ logGS.Zyg, col="blue", xlim=c(-0.9, 0.85), ylim=c(-6.5,-1),
+     ylab="log Body Weight (g)", xlab="log Genome Size (pg)")
+points(logBW.Anis ~ logGS.Anis, col="red")
+abline(genomeSizeModelDragon, col="red")
+abline(genomeSizeModelDamsel, col="blue")

@@ -35,7 +35,27 @@ print(t.gs)
 
 
 # Use the function t.test to do this more easily and get more information (p value, degrees of freedom, confidence interval). The null hypothesis can be set using the option mu.
-t.test(genome$GenomeSize, mu=1.25)
+data = t.test(genome$GenomeSize, mu=1.25)
+print(data)
+
+
+
+######## t test confidence interval ########
+# Find the edges of the middle 95% of a t distribution with 99 df
+# (quantiles of the t distribution, so qt)
+tlim <- qt(c(0.025,0.975), df = 99)
+print(tlim)
+
+# use the mean and standard error from above to get a confidence interval
+mean.gs + tlim * se.gs
+
+
+
+######## t test for Odonata body weight (dragonflies & damselflies) ######## 
+# Using the t.test, test whether the body weight (in grams) of
+# Odonata is different from the average for arthropods of 0.045 grams.
+data = t.test(genome$BodyWeight, mu=0.045)
+print(data)
 
 
 
@@ -69,6 +89,10 @@ print(t.gs)
 t.test(GenomeSize ~ Suborder, data = genome)
 
 
+# t test for body weight difference
+t.test(BodyWeight ~ Suborder, data=genome)
+
+
 
 ######## F tests ########
 ## If var(a)=var(b), then F=1
@@ -86,7 +110,7 @@ par(mfg=c(1,2))
 boxplot(log(genome$BodyWeight) ~ genome$Suborder, xlab="Suborder", ylab="Body Weight")
 
 # Calculate F
-var.gs[1]/var.gs[2] # already calculated the varuance for the t test above
+var.gs[1]/var.gs[2] # already calculated the variance for the t test above
 
 # Use the var.test function to do the calculations
 var.test(GenomeSize ~ Suborder, data = genome)
