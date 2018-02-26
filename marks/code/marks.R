@@ -136,14 +136,17 @@ model.diagnostics <- function(what) {
 }
 
 
-# Anovas
-model.anova <- function() {
-  lm.gender <- lm(Course.mark ~ Gender, data=markz)  # course marks by gender
+# Anovas between different categories
+categories <- list(markz$Gender, markz$Group, markz$Cursus)  # list not c
+# Calculates anova for a marks category passed as argument. If the above
+# list is used for a single category, then the call is, eg,
+# model.anova(categories[[2]])
+# to get the group marks. To run the function on all the categories, use
+# sapply(categories, model.anova)
+model.anova <- function(category) {
+  lm.gender <- lm(markz$Course.mark ~ category)  # course marks by category
   print(anova(lm.gender))
-  lm.group <- lm(Course.mark ~ Group, data=markz)
-  print(anova(lm.group))
-  lm.cursus <- lm(Course.mark ~ Cursus, data=markz)
-  print(anova(lm.cursus))
+  print(summary(lm.gender))
 }
 
 
@@ -243,25 +246,40 @@ model.diagnostics(markz$Course.mark ~ markz$Final.mark)
 # which means that the different marks colums have different lengths (where the NAs
 # are excluded). And that makes anova unhappy.
 # So let's filter out those rows.
-markz.noNA = markz[complete.cases(markz), ]
+#markz.noNA = markz[complete.cases(markz), ]
 # Now we can get the linear models for course marks vs the various marks.
-lm.quiz_courseMarks <- lm(Course.mark ~ Quiz.mark, data=markz.noNA)
-lm.midterm_courseMarks <- lm(Course.mark ~ Midterm.mark, data=markz.noNA)
-lm.final_courseMarks <- lm(Course.mark ~ Final.mark, data=markz.noNA)
+#lm.quiz_courseMarks <- lm(Course.mark ~ Quiz.mark, data=markz.noNA)
+#lm.midterm_courseMarks <- lm(Course.mark ~ Midterm.mark, data=markz.noNA)
+#lm.final_courseMarks <- lm(Course.mark ~ Final.mark, data=markz.noNA)
 
 
-model.anova()
+model.anova(categories[[1]])
 # Comparison of the means of the overall course marks by different
 # categories. So, looking at the course marks by gender, anova will
 # try to determine whether the difference between the means of males
 # and females can be explained away the the variances between individuals,
 # or whether the difference between the categories really is significant.
-# Anova determines: Gender     1   4.19  4.1864  0.8982 0.3461
+# Anova determines:
+# Response: Course.mark
+#           Df Sum Sq Mean Sq F value Pr(>F)
+# Gender     1   4.19  4.1864  0.8982 0.3461
+# Residuals 80 372.87  4.6609 Gender     1   4.19  4.1864  0.8982 0.3461
 # As usual, the null hypothesis H0 would say that there is no significant
 # difference in the means. Given H0, there would be a probability p = 0.35
-# of getting an F-value = 0.9. That seems pretty big, so it seems that
+# of getting an F-value = 0.9. That seems a pretty big p, so
 # H0 can't be rejected. Any differences are just random.
 # Or something.
+# Further, the Sum Sq differences due to (or "explained by" as the
+# statisticians say) differences in gender is pretty small compared to
+# residual differences (not explained by gender) 4.19 << 372.87.
+# For the coefficients:
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  11.6622     0.7196  16.206   <2e-16 ***
+# categoryM     0.7228     0.7627   0.948    0.346
+# the means for the base category F, given as Intercept, (11.66) and for
+# M (11.66 + 0.72) are both >> 0. Which is just as well.
 
-# Differences in cursus seem more significant: larger F, smaller p.
+# Differences in cursus seem a bit more significant: larger F, smaller p,
+# but still seem to be no big deal.
 
