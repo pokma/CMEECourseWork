@@ -7,119 +7,109 @@ str(markz)  # have a look
 # Oops! Need to restructure Group from numerical vector into a factor.
 markz$Group <- factor(as.character(markz$Group), as.character(1:4))
 
+# There are three different data catgories: gender, group, and cursus.
+# Meaning that every student has a gender, was in a different lab group,
+# and following a particular cursus before landing in this course.
+categories <- list(markz$Gender, markz$Group, markz$Cursus)  # list not c because inhomogeneous data
+
+# While we're at it, collect the marks
+marks <- list(markz$Course.mark, markz$Quiz.mark, markz$Midterm.mark, markz$Final.mark)
+marks.labels <- c("Overall course mark", "Quiz mark", "Midterm test mark", "Final test mark")
+
+
+
+#### Basic displays ####
 
 # Display histograms for various marks.
 statz.marks <- function() {
   par(mfcol=c(2,2))
-  par(mfg=c(1,1))
-  hist(markz$Course.mark, xlim=c(0,20), xlab="Overall course mark", main="OOP marks")
-  par(mfg=c(1,2))
-  hist(markz$Quiz.mark, xlim=c(0,20), xlab="Quiz mark", main="")
-  par(mfg=c(2,1))
-  hist(markz$Midterm.mark, xlim=c(0,20), xlab="Midterm test mark", main="")
-  par(mfg=c(2,2))
-  hist(markz$Final.mark, xlim=c(0,20), xlab="Final test mark", main="")
+  # apply the function to the marks and their x-axis labels
+  mapply(function(mrk, lbl) {
+    hist(mrk, xlim=c(0,20), main="", xlab=lbl)
+  }, marks, marks.labels)
+  # note: mapply is your friend! and all the other Xapplys
 }
 
 
-# Calculates and displays stats (mean and std dev) for the overall course marks by
-#  various categories.
-statz.mean_sd <-function() {
-  # calculates and displays stats
-  # overall course mark
-  print(paste("course mark mean:", mean(markz$Course.mark)))
-  print(paste("course mark std dev:", sd(markz$Course.mark)))
-  # course mark by cursus
-  print("course mark mean by cursus:")
-  print(tapply(markz$Course.mark, markz$Cursus, mean))
-  print("course mark std dev by cursus:")
-  print(tapply(markz$Course.mark, markz$Cursus, sd))
-  # course mark by group
-  print("course mark mean by group:")
-  print(tapply(markz$Course.mark, markz$Group, mean))
-  print("course mark std dev by group:")
-  print(tapply(markz$Course.mark, markz$Group, sd))
-  # course mark by gender
-  print("course mark mean by gender:")
-  print(tapply(markz$Course.mark, markz$Gender, mean))
-  print("course mark std dev by gender:")
-  print(tapply(markz$Course.mark, markz$Gender, sd))
-  # plots course mark stats
+# Prints and plots statistics (mean, std dev) for overall course
+# marks for a given category.
+statz.mean_sd.category <- function(category) {
+  # calculates and displays stats for the given category
+  print(tapply(markz$Course.mark, category, mean))
+  print(tapply(markz$Course.mark, category, sd))
+  plot(markz$Course.mark ~ category, xlab="Category")
+}
+
+
+# Prints and plots statistics (mean, std dev) for overall course
+# marks for all categories.
+statz.mean_sd.categories <- function() {
+  # displays in 2x2 grid
   par(mfcol=c(2,2))
-  par(mfg=c(1,2))
-  # by cursus
-  plot(Course.mark ~ Cursus, data=markz)
-  par(mfg=c(2,1))
-  # by gender
-  plot(Course.mark ~ Gender, data=markz)
-  par(mfg=c(2,2))
-  # by group
-  plot(Course.mark ~ Group, data=markz)
+  hist(markz$Course.mark, xlab="Course mark")
+  # applies the above function to all categories
+  sapply(categories, statz.mean_sd.category)
+  # note: did i say that sapply is your friend?
 }
 
 
-# Compare means between overall marks and various partial marks.
+
+#### Bring on the stats! ####
+
+### t- and F-tests ###
+
+# Compare means between overall marks and different partial marks.
 ttest.marks <- function() {
-  # overall vs quiz
-  print(t.test(markz$Course.mark, markz$Quiz.mark))
-  # overall vs midterm test
-  print(t.test(markz$Course.mark, markz$Midterm.mark))
-  # overall vs final test
-  print(t.test(markz$Course.mark, markz$Final.mark))
+  # start with second marks entry since the first would just compare
+  # overall course marks to itself
+  sapply(marks[2:4], function(mrk) {
+    print(t.test(markz$Course.mark, mrk))
+  })
+  return()
 }
 
 
-# Compare variances between overall marks and various partial marks.
+# Compare variances between overall marks and different partial marks.
 vartest.marks <- function() {
-  # overall vs quiz
-  print(var.test(markz$Course.mark, markz$Quiz.mark))
-  # overall vs midterm test
-  print(var.test(markz$Course.mark, markz$Midterm.mark))
-  # overall vs final test
-  print(var.test(markz$Course.mark, markz$Final.mark))
+  # start with second marks entry since the first would just compare
+  # overall course marks to itself
+  sapply(marks[2:4], function(mrk) {
+    print(var.test(markz$Course.mark, mrk))
+  })
+  return()
 }
 
 
-# Scatterplots between all sets of marks
+# Scatterplots between all pairs of marks
 scatter.marks <- function() {
   marks.cols = c(7,8,11,12)  # indices of various marks
-  # plot pairwise scatterplots between marks
+  # plot pairwise scatterplots between different marks
   pairs(markz[, marks.cols])
 }
 
 
-# Compare correlations between overall marks and various partial marks.
+# Compare correlations between overall marks and different partial marks.
 cor.marks <- function() {
   marks.cols = c(7,8,11,12)  # indices of various marks
-  # display correlations between marks
-  # this just displays the correlations without any indication whether
+  # print correlations between marks
+  # this just prints the correlations without any indication whether
   #  the number is significant
   cor(markz[, marks.cols], use="pairwise")
-  # overall vs quiz
+  # test correlation between overall and quiz
   # this uses a t test to give some confidence (or not) in the
-  #  null hypothesis that the correlation = 0
-  # if the correlation falls inside the confidence interval
-  #  then the null hypothesis cannot be rejected and the
-  #  variances are sufficiently similiar
-  # or something like that...
-  print(cor.test(markz$Course.mark, markz$Quiz.mark))
-  # overall vs midterm test
-  print(cor.test(markz$Course.mark, markz$Midterm.mark))
-  # overall vs final test
-  print(cor.test(markz$Course.mark, markz$Final.mark))
-  # plots correlation overall vs...
+  #  null hypothesis H0 that the correlation = 0
+  # if the t-value falls inside the confidence interval
+  #  then, assuming H0 to be true, there is a > 5% probability that
+  #  the observed results came about by chance. This is sufficiently
+  #  big that H0 cannot be rejected.
   par(mfcol=c(2,2))
-  par(mfg=c(1,1))
-  # vs quiz
-  plot(markz$Course.mark ~ markz$Quiz.mark)
-  abline(lm(Course.mark ~ Quiz.mark, data=markz), col="red")
-  par(mfg=c(2,1))
-  # vs midterm
-  plot(markz$Course.mark ~ markz$Midterm.mark)
-  abline(lm(Course.mark ~ Midterm.mark, data=markz), col="green")
-  par(mfg=c(2,2))
-  plot(markz$Course.mark ~ markz$Final.mark)
-  abline(lm(Course.mark ~ Final.mark, data=markz), col="blue")
+  mapply(function(mrk, lbl) {
+    print(cor.test(markz$Course.mark, mrk))
+    # plots correlation overall vs...
+    plot(markz$Course.mark ~ mrk, xlab=lbl)
+    abline(lm(Course.mark ~ mrk, data=markz), col="red")
+  }, marks[2:4], marks.labels[2:4])
+  return()
 }
 
 
@@ -137,16 +127,15 @@ model.diagnostics <- function(what) {
 
 
 # Anovas between different categories
-categories <- list(markz$Gender, markz$Group, markz$Cursus)  # list not c
 # Calculates anova for a marks category passed as argument. If the above
 # list is used for a single category, then the call is, eg,
 # model.anova(categories[[2]])
 # to get the group marks. To run the function on all the categories, use
 # sapply(categories, model.anova)
 model.anova <- function(category) {
-  lm.gender <- lm(markz$Course.mark ~ category)  # course marks by category
-  print(anova(lm.gender))
-  print(summary(lm.gender))
+  lm.category <- lm(markz$Course.mark ~ category)  # course marks by category
+  print(anova(lm.category))
+  print(summary(lm.category))
 }
 
 
@@ -159,7 +148,7 @@ statz.marks()
 # less than the midterm and quiz.
 
 
-statz.mean_sd()
+statz.mean_sd.categories()
 # Seems to be less difference by gender and group than by cursus.
 
 
